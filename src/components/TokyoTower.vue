@@ -22,6 +22,35 @@ export default {
         endpoint: "https://ropsten.infura.io/v3/2e78310c36c64ae6929c92662c4f9cff",
         contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af"
     }
+  },
+  methods: {
+    changeDistance(pos) {
+      var tt_lat = 35.658584;
+      var tt_lng = 139.7454316;
+      var curloc_lat = pos.coords.latitude;
+      var curloc_lng = pos.coords.longitude;
+      var current_distance = this.calculateDistance(tt_lat,tt_lng,curloc_lat,curloc_lng).toFixed(3);
+      this.distance = current_distance;
+    },
+    calculateDistance(lat1, lng1, lat2, lng2) {
+      lat1 *= Math.PI / 180;
+      lng1 *= Math.PI / 180;
+      lat2 *= Math.PI / 180;
+      lng2 *= Math.PI / 180;
+      return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+    },
+    startWatchingPosition() {
+      try {
+        navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 20000, "maximumAge": 2000});
+        console.log("method ends.");
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  },
+  async created() {
+    //位置情報のモニタリングを開始
+    this.startWatchingPosition();
   }
 }
 </script>
