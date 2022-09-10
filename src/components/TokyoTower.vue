@@ -23,6 +23,16 @@ export default {
         contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af"
     }
   },
+  computed: {
+    Mintable: function() {
+      if(this.distance < 0.1) {
+        this.isMintable = true;
+        return true;
+      } else {
+        return false;
+      }
+    }
+  },
   methods: {
     changeDistance(pos) {
       var tt_lat = 35.658584;
@@ -70,6 +80,11 @@ export default {
   color: white;
 }
 
+.mint_button:hover {
+  background-color: #2d64d1;
+}
+
+
 .mint_button:disabled {
   border: none;
   align-items: center;
@@ -82,9 +97,4 @@ export default {
   border-radius: 50vh;
   color: white;
 }
-
-.mint_button:hover {
-  background-color: #2d64d1;
-}
-
 </style>
