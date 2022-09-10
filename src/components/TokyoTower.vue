@@ -57,14 +57,11 @@ export default {
       return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
     },
     startWatchingPosition() {
-      console.log("wpcalled");
+      console.log("swpcalled");
       navigator.geolocation.watchPosition(
-        position => {
-          this.lat = position.coords.latitude;
-          this.lng = position.coords.longitude;
-        }, 
+        this.changeDistance,                      
         function(e) { alert(e.message); }, 
-        {enableHighAccuracy: true, timeout: 60000, maximumAge: 0});
+        {enableHighAccuracy: true});
     },
     async connectWallet() {
       //metamaskの接続処理
@@ -109,7 +106,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    this.startWatchingPosition();
+    setInterval(this.startWatchingPosition,2000);
 
     //metamskのインストール確認
     this.checkMetamask();
