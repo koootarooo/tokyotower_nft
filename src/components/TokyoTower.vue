@@ -5,6 +5,8 @@
         <p>MINT済み：{{ count_minted }} / 100</p>
         <p>{{Mintable ? 'MINT可能です' : 'もっと東京タワーに近づいてください'}}</p>
         <p>東京タワーまであと {{ distance }}km</p>
+        <p>lat : {{lat}}</p>
+        <p>lng : {{lng}}</p>
         <input type="button" value="MINT" class="mint_button" @click="mint" :disabled="!Mintable">
     </div>
 </template>
@@ -20,7 +22,9 @@ export default {
         web3: null,
         nftContract: null,
         endpoint: "https://ropsten.infura.io/v3/2e78310c36c64ae6929c92662c4f9cff",
-        contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af"
+        contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af",
+        lat: 0,
+        lng: 0
     }
   },
   computed: {
@@ -35,10 +39,13 @@ export default {
   },
   methods: {
     changeDistance(pos) {
+      console.log("cdcalled");
       var tt_lat = 35.658584;
       var tt_lng = 139.7454316;
       var curloc_lat = pos.coords.latitude;
       var curloc_lng = pos.coords.longitude;
+      this.lat = curloc_lat;
+      this.lng = curloc_lng;
       var current_distance = this.calculateDistance(tt_lat,tt_lng,curloc_lat,curloc_lng).toFixed(3);
       this.distance = current_distance;
     },
@@ -50,12 +57,8 @@ export default {
       return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
     },
     startWatchingPosition() {
-      try {
-        navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 60000, "maximumAge": 0});
-        console.log("method ends.");
-      } catch(e) {
-        console.log(e);
-      }
+      console.log("wpcalled");
+      navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 60000, "maximumAge": 0});
     },
     async connectWallet() {
       //metamaskの接続処理
@@ -98,7 +101,8 @@ export default {
     }
   },
   async created() {
-    //位置情報のモニタリングを開始
+
+    //位置情報取得開始
     this.startWatchingPosition();
 
     //metamskのインストール確認
