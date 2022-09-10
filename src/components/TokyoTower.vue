@@ -56,11 +56,61 @@ export default {
       } catch(e) {
         console.log(e);
       }
+    },
+    async connectWallet() {
+      //metamaskの接続処理
+      try {
+        const accounts = await window.ethereum.request({method: 'eth_accounts'});
+        const account = accounts[0];
+        if(account === void 0){
+          alert('metamaskにログインしてください');
+        } else {
+          console.log('connecting');
+          console.log(account);
+          this.web3.eth.defaultAccount = account;
+        }
+      } catch(e) {
+        console.log(e);
+      }
+    },
+    async setConnection() {
+        await this.connectWallet();
+        this.checkChain();
+    },
+    checkChain(){
+      //接続されているchainを確認
+      if (window.ethereum.chainId != 0x3) {
+        alert('Ropstenに切り替えてください。');
+      } else {
+        console.log('Ropstenに接続されています。');
+      }
+    },
+    checkMetamask(){
+      if (!window.ethereum || !window.ethereum.isMetaMask) {
+        //metamaskがインストールされていない
+        alert('Metamaskをインストールしてください');
+      } else {
+        //metamaskはインストールされているのでアカウントの連携を行う
+        console.log('metamaskがインストールされています');
+      }
     }
   },
   async created() {
     //位置情報のモニタリングを開始
     this.startWatchingPosition();
+
+    //metamskのインストール確認
+    this.checkMetamask();
+
+    //web3.jsの初期設定
+    const web3 = new Web3(this.endpoint);
+    const json = require("../../tokyotower_abi.json");
+    const nftContract = new web3.eth.Contract(json.abi, this.contractAddress);
+    this.web3 = web3;
+    this.nftContract = nftContract;
+
+    //ウォレット接続とchainの確認
+    await this.setConnection();
   }
 }
 </script>
