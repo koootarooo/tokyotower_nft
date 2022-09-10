@@ -58,7 +58,13 @@ export default {
     },
     startWatchingPosition() {
       console.log("wpcalled");
-      navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 60000, "maximumAge": 0});
+      navigator.geolocation.watchPosition(
+        position => {
+          this.lat = position.coords.latitude;
+          this.lng = position.coords.longitude;
+        }, 
+        function(e) { alert(e.message); }, 
+        {"enableHighAccuracy": true, "timeout": 60000, "maximumAge": 0});
     },
     async connectWallet() {
       //metamaskの接続処理
