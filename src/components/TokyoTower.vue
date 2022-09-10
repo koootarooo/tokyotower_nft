@@ -62,6 +62,8 @@ export default {
       try {
         const accounts = await window.ethereum.request({method: 'eth_accounts'});
         const account = accounts[0];
+        console.log('trying connect...');
+        console.log(accounts);
         if(account === void 0){
           alert('metamaskにログインしてください');
         } else {
