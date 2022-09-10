@@ -58,7 +58,7 @@ export default {
     },
     startWatchingPosition() {
       console.log("swpcalled");
-      navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
         this.changeDistance,                      
         function(e) { alert(e.message); }, 
         {enableHighAccuracy: true});
