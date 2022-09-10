@@ -41,7 +41,7 @@ export default {
     },
     startWatchingPosition() {
       try {
-        navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 20000, "maximumAge": 2000});
+        navigator.geolocation.watchPosition(this.changeDistance, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 60000, "maximumAge": 0});
         console.log("method ends.");
       } catch(e) {
         console.log(e);
