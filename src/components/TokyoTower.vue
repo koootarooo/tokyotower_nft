@@ -17,14 +17,14 @@ export default {
   data () {
     return {
         count_minted: 0,
-        distance: 1000,
+        distance: '',
         isMintable: false,
         web3: null,
         nftContract: null,
         endpoint: "https://ropsten.infura.io/v3/2e78310c36c64ae6929c92662c4f9cff",
         contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af",
-        lat: 0,
-        lng: 0
+        lat: '',
+        lng: ''
     }
   },
   computed: {
@@ -58,6 +58,9 @@ export default {
     },
     startWatchingPosition() {
       console.log("swpcalled");
+      this.distance = 0;
+      this.lat = 0;
+      this.lng = 0;
       navigator.geolocation.getCurrentPosition(
         this.changeDistance,                      
         function(e) { alert(e.message); }, 
@@ -106,7 +109,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    setInterval(this.startWatchingPosition,2000);
+    this.startWatchingPosition();
 
     //metamskのインストール確認
     this.checkMetamask();
