@@ -5,8 +5,8 @@
         <p>MINT済み：{{ count_minted }} / 100</p>
         <p>{{Mintable ? 'MINT可能です' : 'もっと東京タワーに近づいてください'}}</p>
         <p>東京タワーまであと {{ distance }}km</p>
-        <p>lat : {{lat}}</p>
-        <p>lng : {{lng}}</p>
+        <p>lat : <span v-text="lat"></span></p>
+        <p>lng : <span v-text="lng"></span></p>
         <input type="button" value="MINT" class="mint_button" @click="mint" :disabled="!Mintable">
     </div>
 </template>
@@ -48,6 +48,7 @@ export default {
       this.lng = curloc_lng;
       var current_distance = this.calculateDistance(tt_lat,tt_lng,curloc_lat,curloc_lng).toFixed(3);
       this.distance = current_distance;
+      this.$forceUpdate();
     },
     calculateDistance(lat1, lng1, lat2, lng2) {
       lat1 *= Math.PI / 180;
@@ -58,9 +59,6 @@ export default {
     },
     startWatchingPosition() {
       console.log("swpcalled");
-      this.distance = 0;
-      this.lat = 0;
-      this.lng = 0;
       navigator.geolocation.getCurrentPosition(
         this.changeDistance,                      
         function(e) { alert(e.message); }, 
@@ -109,7 +107,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    this.startWatchingPosition();
+    setInterval(this.startWatchingPosition,2000);
 
     //metamskのインストール確認
     this.checkMetamask();
