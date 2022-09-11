@@ -109,7 +109,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    //this.startWatchingPosition();
+    this.startWatchingPosition();
 
     //metamskのインストール確認
     this.checkMetamask();
