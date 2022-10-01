@@ -5,8 +5,8 @@
         <p>MINT済み：{{ count_minted }} / 100</p>
         <p>{{Mintable ? 'MINT可能です' : 'もっと東京タワーに近づいてください'}}</p>
         <p>東京タワーまであと {{ distance }}km</p>
-        <p>lat : <span v-text="lat"></span></p>
-        <p>lng : <span v-text="lng"></span></p>
+        <p>lat : {{ lat }}</p>
+        <p>lng : {{ lng }}</p>
         <input type="button" value="MINT" class="mint_button" @click="mint" :disabled="!Mintable">
     </div>
 </template>
@@ -17,14 +17,14 @@ export default {
   data () {
     return {
         count_minted: 0,
-        distance: '',
+        distance: null,
         isMintable: false,
         web3: null,
         nftContract: null,
         endpoint: "https://ropsten.infura.io/v3/2e78310c36c64ae6929c92662c4f9cff",
         contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af",
-        lat: '',
-        lng: ''
+        lat: null,
+        lng: null
     }
   },
   computed: {
@@ -44,10 +44,16 @@ export default {
       var tt_lng = 139.7454316;
       var curloc_lat = pos.coords.latitude;
       var curloc_lng = pos.coords.longitude;
+      console.log(curloc_lat);
+      console.log(curloc_lng);
       this.lat = curloc_lat;
       this.lng = curloc_lng;
+      console.log(this.lat);
+      console.log(this.lng);
       var current_distance = this.calculateDistance(tt_lat,tt_lng,curloc_lat,curloc_lng).toFixed(3);
+      console.log(current_distance);
       this.distance = current_distance;
+      console.log(this.distance);
       this.$forceUpdate();
     },
     calculateDistance(lat1, lng1, lat2, lng2) {
@@ -107,7 +113,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    setInterval(this.startWatchingPosition,2000);
+    setInterval(this.startWatchingPosition,3000);
 
     //metamskのインストール確認
     this.checkMetamask();
