@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div id = "txStatus"></div>
     <div class="container">
         <h1>TokyoTowerNFT</h1>
         <img class="question" src="./assets/question.jpeg" width="200" height="200" alt="">
@@ -27,7 +28,8 @@ export default {
         endpoint: "https://ropsten.infura.io/v3/2e78310c36c64ae6929c92662c4f9cff",
         contractAddress: "0x13D7964fEd6c8A92097E5f0659FD53D1E54505af",
         lat: null,
-        lng: null
+        lng: null,
+        user_nft_count: 0
     }
   },
   computed: {
@@ -86,6 +88,7 @@ export default {
           console.log('connecting');
           console.log(account);
           this.web3.eth.defaultAccount = account;
+          alert('metamaskのログインが完了しています');
         }
       } catch(e) {
         console.log(e);
@@ -112,8 +115,27 @@ export default {
         console.log('metamaskがインストールされています');
       }
     },
+    async getTotalSupply() {
+      const totalSupply = await this.nftContract.methods.totalSupply().call();
+      console.log('totalsupply called');
+      console.log(totalSupply);
+      this.count_minted = totalSupply;
+    },
     mint(){
-      //これから
+      $("#txStatus").text("NFT発行中...時間がかかる可能性があります。");
+      return this.nftContract.methods.mint(this.web3.eth.defaultAccount)
+      .send({from: this.web3.eth.defaultAccount})
+      .on("receipt", function(receipt){
+        $("#txStatus").text("MINT成功です。リンクからご確認ください");
+        this.getBalance(this.web3.eth.defaultAccount);
+      })
+      .error("error", function(error){
+        $("#txStatus").text(error);
+      });
+    },
+    async getBalance(owner){
+      const user_nft_count = await this.nftContract.methods.balanceOf(owner).call();
+      this.user_nft_count = user_nft_count;
     }
   },
   async created() {
@@ -133,6 +155,26 @@ export default {
 
     //ウォレット接続とchainの確認
     await this.setConnection();
+
+    //初回立ち上げ時の初期設定のセッティング
+    await this.getTotalSupply();
+
+    //ユーザーのNFT所持数の確認
+    await this.getBalance(this.web3.eth.defaultAccount);
+
+    //metamaskのログイン状態に変更があった際の処理
+    //うまく動いてない
+    window.addEventListener("load", () => {
+      window.ethereum.on('accountsChanged', () => {
+        console.log('accountsChanged.');
+        this.setConnection();
+      });
+
+      window.ethereum.on('chainChanged', () => {
+        console.log('chainChanged.');
+        this.checkChain();
+      });
+    });
   }
 }
 </script>
