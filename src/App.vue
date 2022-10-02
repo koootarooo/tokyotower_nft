@@ -45,8 +45,8 @@ export default {
       console.log("cdcalled");
       var tt_lat = 35.658584;
       var tt_lng = 139.7454316;
-      var curloc_lat = pos.coords.latitude;
-      var curloc_lng = pos.coords.longitude;
+      var curloc_lat = pos.coords.latitude.toFixed(3);
+      var curloc_lng = pos.coords.longitude.toFixed(3);
       console.log(curloc_lat);
       console.log(curloc_lng);
       this.lat = curloc_lat;
@@ -68,7 +68,7 @@ export default {
     },
     startWatchingPosition() {
       console.log("swpcalled");
-      navigator.geolocation.getCurrentPosition(
+      navigator.geolocation.watchPosition(
         this.changeDistance,                      
         function(e) { alert(e.message); }, 
         {enableHighAccuracy: true});
@@ -119,7 +119,7 @@ export default {
   async created() {
 
     //位置情報取得開始
-    setInterval(this.startWatchingPosition,3000);
+    this.startWatchingPosition();
 
     //metamskのインストール確認
     this.checkMetamask();
